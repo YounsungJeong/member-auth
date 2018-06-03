@@ -40,4 +40,14 @@ public class Member implements JpaId<Long> {
         this.phone = phone;
         this.registrationDate = LocalDateTime.now();
     }
+
+    public void changePassword(String oldPassword, String newPassword) {
+        if(!this.password.equals(oldPassword))
+            throw new IllegalArgumentException("password wrong");
+
+        if(this.password.equals(newPassword))
+            throw new IllegalArgumentException("new password is same to old password");
+
+        this.password = newPassword;
+    }
 }

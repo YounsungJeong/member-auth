@@ -23,7 +23,7 @@ public class CreateMemberRequestTest extends AbstractDomainTest<CreateMemberRequ
         // is null
         assertThat(t.getEmail(), is(nullValue()));
         assertThat(t.getPassword(), is(nullValue()));
-        assertThat(t.phone, is(nullValue()));
+        assertThat(t.getPhone(), is(nullValue()));
     }
 
     @Override

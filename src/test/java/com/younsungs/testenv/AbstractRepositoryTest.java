@@ -21,8 +21,8 @@ import static org.junit.Assert.assertThat;
 @Transactional
 public abstract class AbstractRepositoryTest<T extends JpaId<ID>, R extends JpaRepository<T, ID>, ID extends Serializable>{
 
-    R r;
-    T t;
+    protected R r;
+    protected T t;
     @Before
     public void init(){
         r = initRepository();

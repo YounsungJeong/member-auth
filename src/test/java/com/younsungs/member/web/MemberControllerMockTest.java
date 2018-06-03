@@ -2,9 +2,11 @@ package com.younsungs.member.web;
 
 import com.younsungs.common.domain.BaseResponse;
 import com.younsungs.common.domain.DefaultCode;
+import com.younsungs.member.domain.request.ChangePasswordRequest;
 import com.younsungs.member.domain.request.CreateMemberRequest;
-import com.younsungs.member.domain.request.testenv.CreateMemberRequestSpy;
+import com.younsungs.member.domain.request.testenv.ChangePasswordRequestTestFactory;
 import com.younsungs.member.domain.request.testenv.CreateMemberRequestTestFactory;
+import com.younsungs.member.service.ChangePasswordService;
 import com.younsungs.member.service.CreateMemberService;
 import com.younsungs.testenv.AbstractMockControllerTest;
 import org.junit.Test;
@@ -21,13 +23,15 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 
-public class MemberControllerTest extends AbstractMockControllerTest<MemberController> {
+public class MemberControllerMockTest extends AbstractMockControllerTest<MemberController> {
 
     @InjectMocks MemberController memberController;
     @Mock CreateMemberService createMemberService;
+    @Mock ChangePasswordService changePasswordService;
 
     @Override
     public MemberController getController() {
@@ -78,5 +82,48 @@ public class MemberControllerTest extends AbstractMockControllerTest<MemberContr
         }
     }
 
+    @Test
+    public void changePassword_성공(){
+        List<ChangePasswordRequest> requests = ChangePasswordRequestTestFactory.INSTANCE.chanePassword_성공();
+
+        for(ChangePasswordRequest request : requests){
+            MockHttpServletResponse mockResponse = changePassword(request);
+            BaseResponse response = super.parsingResponse(mockResponse);
+
+            verify(changePasswordService, times(1)).changePassword(request);
+            assertThat(mockResponse.getStatus(), is(HttpStatus.OK.value()));
+            assertThat(response.getCode(), is(DefaultCode.OK.getCode()));
+            assertThat(response.getMessage(), is(DefaultCode.OK.getMessage()));
+        }
+    }
+
+    @Test
+    public void changePassword_실패(){
+        List<ChangePasswordRequest> requests = ChangePasswordRequestTestFactory.INSTANCE.chanePassword_실패();
+
+        for(ChangePasswordRequest request : requests){
+            MockHttpServletResponse mockResponse = changePassword(request);
+
+            verify(changePasswordService, times(0)).changePassword(request);
+            assertThat(mockResponse.getStatus(), is(HttpStatus.BAD_REQUEST.value()));
+        }
+    }
+
+    MockHttpServletResponse changePassword(ChangePasswordRequest changePasswordRequest) {
+        try {
+            return mockMvc.perform(put("/member/password")
+                    .content(gson.toJson(changePasswordRequest))
+                    .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                    .accept(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                    .andExpect(handler().handlerType(MemberController.class))
+                    .andExpect(handler().methodName("changePassword"))
+                    .andDo(print())
+                    .andReturn()
+                    .getResponse();
+        }
+        catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
 
 }

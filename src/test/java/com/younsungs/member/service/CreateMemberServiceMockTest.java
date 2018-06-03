@@ -17,7 +17,7 @@ import static org.mockito.Mockito.verify;
 
 
 @RunWith(MockitoJUnitRunner.class)
-public class CreateMemberServiceTest {
+public class CreateMemberServiceMockTest {
     @InjectMocks CreateMemberService createMemberService;
     @Mock MemberRepository memberRepository;
 
@@ -28,10 +28,10 @@ public class CreateMemberServiceTest {
     @Test
     public void createMember(){
         // GIVEN
-        createMemberService.createMember(email, password, phone);
+        ArgumentCaptor<Member> argument = ArgumentCaptor.forClass(Member.class);
 
         // When
-        ArgumentCaptor<Member> argument = ArgumentCaptor.forClass(Member.class);
+        createMemberService.createMember(email, password, phone);
 
         // Then
         verify(memberRepository, times(1)).save(argument.capture());
