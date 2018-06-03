@@ -1,5 +1,8 @@
 package com.younsungs.common.domain;
 
+import lombok.Getter;
+
+@Getter
 public class BaseResponse<T> {
     private String message;
     private Integer code;
@@ -13,5 +16,10 @@ public class BaseResponse<T> {
     public BaseResponse(DefaultCode defaultCode, T response) {
         this(defaultCode);
         this.response = response;
+    }
+
+    private static final BaseResponse successResponse = new BaseResponse(DefaultCode.OK);
+    public static BaseResponse okResponse(){
+        return successResponse;
     }
 }

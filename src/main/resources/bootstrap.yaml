@@ -1,6 +1,9 @@
 spring:
   application:
     name: member-auth-api
+  cloud:
+    config:
+      uri: http://localhost:8888
 
 eureka:
   client:
