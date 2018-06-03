@@ -13,5 +13,4 @@ import javax.validation.constraints.NotBlank;
 public class CreateMemberRequest {
     @NotBlank @Email protected String email;
     @NotBlank protected String password;
-    protected String phone;
 }

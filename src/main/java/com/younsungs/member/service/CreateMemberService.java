@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 public class CreateMemberService {
     @Autowired MemberRepository memberRepository;
 
-    public void createMember(String email, String password, String phone){
-        Member member = new Member(email, password, phone);
+    public void createMember(String email, String password){
+        Member member = new Member(email, password);
         memberRepository.save(member);
     }
 }

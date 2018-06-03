@@ -11,7 +11,6 @@ import static org.junit.Assert.assertThat;
 public class CreateMemberRequestTest extends AbstractDomainTest<CreateMemberRequest> {
     String email = "test@eamil.com";
     String password = "12345678";
-    String phone = "010-1234-5678";
 
     @Override
     public void noArgsConstructor() {
@@ -23,7 +22,6 @@ public class CreateMemberRequestTest extends AbstractDomainTest<CreateMemberRequ
         // is null
         assertThat(t.getEmail(), is(nullValue()));
         assertThat(t.getPassword(), is(nullValue()));
-        assertThat(t.getPhone(), is(nullValue()));
     }
 
     @Override
@@ -32,11 +30,10 @@ public class CreateMemberRequestTest extends AbstractDomainTest<CreateMemberRequ
         assertThat(t, is(notNullValue()));
         assertThat(t.getEmail(), is(email));
         assertThat(t.getPassword(), is(password));
-        assertThat(t.getPhone(), is(phone));
     }
 
     @Override
     public CreateMemberRequest getDomainObject() {
-        return new CreateMemberRequestSpy(email, password, phone);
+        return new CreateMemberRequestSpy(email, password);
     }
 }

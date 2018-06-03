@@ -23,7 +23,6 @@ public class CreateMemberServiceMockTest {
 
     String email = "test@eamil.com";
     String password = "12345678";
-    String phone = "010-1234-5678";
 
     @Test
     public void createMember(){
@@ -31,13 +30,12 @@ public class CreateMemberServiceMockTest {
         ArgumentCaptor<Member> argument = ArgumentCaptor.forClass(Member.class);
 
         // When
-        createMemberService.createMember(email, password, phone);
+        createMemberService.createMember(email, password);
 
         // Then
         verify(memberRepository, times(1)).save(argument.capture());
         assertThat(argument.getValue().getEmail(), is(email));
         assertThat(argument.getValue().getPassword(), is(password));
-        assertThat(argument.getValue().getPhone(), is(phone));
         assertThat(argument.getValue().getRegistrationDate(), is(notNullValue()));
     }
 }

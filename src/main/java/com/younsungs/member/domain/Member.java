@@ -34,10 +34,9 @@ public class Member implements JpaId<Long> {
     @Column(name = "last_login_date")
     private LocalDateTime lastLoginDate;
 
-    public Member(String email, String password, String phone) {
+    public Member(String email, String password) {
         this.email = email;
         this.password = password;
-        this.phone = phone;
         this.registrationDate = LocalDateTime.now();
     }
 

@@ -32,7 +32,7 @@ public class ChangePasswordServiceMockTest {
     public void changePassword_성공(){
         // Given
         ChangePasswordRequest request = new ChangePasswordRequestSpy(email, oldPassword, newPassword);
-        when(memberRepository.findByEmail(request.getEmail())).thenReturn(Optional.of(new Member(request.getEmail(), request.getOldPassword(), null)));
+        when(memberRepository.findByEmail(request.getEmail())).thenReturn(Optional.of(new Member(request.getEmail(), request.getOldPassword())));
         ArgumentCaptor<Member> argument = ArgumentCaptor.forClass(Member.class);
 
         // When
@@ -62,7 +62,7 @@ public class ChangePasswordServiceMockTest {
     public void changePassword_실패_기존password불일치(){
         // Given
         ChangePasswordRequest request = new ChangePasswordRequestSpy(email, oldPassword, oldPassword); // 동일한 비밀번호
-        when(memberRepository.findByEmail(request.getEmail())).thenReturn(Optional.of(new Member(request.getEmail(), request.getOldPassword(), null)));
+        when(memberRepository.findByEmail(request.getEmail())).thenReturn(Optional.of(new Member(request.getEmail(), request.getOldPassword())));
 
         // When
         changePasswordService.changePassword(request);

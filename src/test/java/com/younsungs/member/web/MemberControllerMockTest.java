@@ -46,7 +46,7 @@ public class MemberControllerMockTest extends AbstractMockControllerTest<MemberC
             MockHttpServletResponse mockResponse = createMember(request);
             BaseResponse response = super.parsingResponse(mockResponse);
 
-            verify(createMemberService, times(1)).createMember(request.getEmail(), request.getPassword(), request.getPhone());
+            verify(createMemberService, times(1)).createMember(request.getEmail(), request.getPassword());
             assertThat(mockResponse.getStatus(), is(HttpStatus.OK.value()));
             assertThat(response.getCode(), is(DefaultCode.OK.getCode()));
             assertThat(response.getMessage(), is(DefaultCode.OK.getMessage()));
@@ -60,7 +60,7 @@ public class MemberControllerMockTest extends AbstractMockControllerTest<MemberC
         for(CreateMemberRequest request : requests){
             MockHttpServletResponse mockResponse = createMember(request);
 
-            verify(createMemberService, times(0)).createMember(request.getEmail(), request.getPassword(), request.getPhone());
+            verify(createMemberService, times(0)).createMember(request.getEmail(), request.getPassword());
             assertThat(mockResponse.getStatus(), is(HttpStatus.BAD_REQUEST.value()));
         }
     }

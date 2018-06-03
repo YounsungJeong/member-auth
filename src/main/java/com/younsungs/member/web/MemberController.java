@@ -21,7 +21,7 @@ public class MemberController {
     @Autowired CreateMemberService createMemberService;
     @PostMapping("/member")
     public BaseResponse createMember(@Valid @RequestBody CreateMemberRequest createMemberRequest){
-        createMemberService.createMember(createMemberRequest.getEmail(), createMemberRequest.getPassword(), createMemberRequest.getPhone());
+        createMemberService.createMember(createMemberRequest.getEmail(), createMemberRequest.getPassword());
         return BaseResponse.okResponse();
     }
 

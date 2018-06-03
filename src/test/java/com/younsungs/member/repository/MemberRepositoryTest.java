@@ -27,7 +27,7 @@ public class MemberRepositoryTest extends AbstractRepositoryTest<Member, MemberR
 
     @Override
     protected Member initObject() {
-        return new Member(email, password, phone);
+        return new Member(email, password);
     }
 
     /** jpql **/
@@ -61,33 +61,28 @@ public class MemberRepositoryTest extends AbstractRepositoryTest<Member, MemberR
     /** 제약조건 **/
     @Test(expected = DataIntegrityViolationException.class)
     public void email_널(){
-        r.saveAndFlush(new Member(null, password, phone));
+        r.saveAndFlush(new Member(null, password));
     }
 
     @Test(expected = DataIntegrityViolationException.class)
     public void email_중복(){
         super.save();
-        r.saveAndFlush(new Member(email, password, UUID.randomUUID().toString()));
+        r.saveAndFlush(new Member(email, password));
     }
 
     @Test(expected = ConstraintViolationException.class)
     public void email_형식(){
-        r.saveAndFlush(new Member("test", password, phone));
+        r.saveAndFlush(new Member("test", password));
     }
 
     @Test(expected = ConstraintViolationException.class)
     public void password_널(){
-        r.saveAndFlush(new Member(email, null, phone));
+        r.saveAndFlush(new Member(email, null));
     }
 
     @Test(expected = ConstraintViolationException.class)
     public void password_공백(){
-        r.saveAndFlush(new Member(email, "", phone));
+        r.saveAndFlush(new Member(email, ""));
     }
 
-    @Test(expected = DataIntegrityViolationException.class)
-    public void phone_중복(){
-        super.save();
-        r.saveAndFlush(new Member(UUID.randomUUID().toString()+"@email", password, phone));
-    }
 }

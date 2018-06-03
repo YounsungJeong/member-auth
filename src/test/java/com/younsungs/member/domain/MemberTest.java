@@ -6,12 +6,12 @@ import org.junit.Test;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 public class MemberTest extends AbstractDomainTest<Member> {
     String email = "test@eamil.com";
     String password = "12345678";
-    String phone = "010-1234-5678";
 
     @Override
     public void noArgsConstructor() {
@@ -35,17 +35,17 @@ public class MemberTest extends AbstractDomainTest<Member> {
         assertThat(t, is(notNullValue()));
         assertThat(t.getEmail(), is(email));
         assertThat(t.getPassword(), is(password));
-        assertThat(t.getPhone(), is(phone));
         assertThat(t.getRegistrationDate(), is(notNullValue()));
 
         // is null
+        assertThat(t.getPhone(), is(nullValue()));
         assertThat(t.getId(), is(nullValue()));
         assertThat(t.getLastLoginDate(), is(nullValue()));
     }
 
     @Override
     public Member getDomainObject() {
-        return new Member(email, password, phone);
+        return new Member(email, password);
     }
 
     /** changePassword **/
