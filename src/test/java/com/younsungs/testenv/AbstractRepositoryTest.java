@@ -22,7 +22,7 @@ import static org.junit.Assert.assertThat;
 public abstract class AbstractRepositoryTest<T extends JpaId<ID>, R extends JpaRepository<T, ID>, ID extends Serializable>{
 
     R r;
-
+    T t;
     @Before
     public void init(){
         r = initRepository();
@@ -31,15 +31,20 @@ public abstract class AbstractRepositoryTest<T extends JpaId<ID>, R extends JpaR
     protected abstract R initRepository();
     protected abstract T initObject();
 
+
+    protected void save(){
+        t = r.saveAndFlush(initObject());
+    }
+
     @Test
-    public void save(){
-        T t = r.saveAndFlush(initObject());
+    public void assertSave(){
+        save();
         assertThat(t.getId(), is(notNullValue()));
     }
 
     @Test
     public void findOne(){
-        T t = r.saveAndFlush(initObject());
+        save();
         ID id = t.getId();
         Optional<T> t_ = r.findById(id);
 

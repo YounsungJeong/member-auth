@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 @Entity
@@ -18,11 +19,10 @@ public class Member implements JpaId<Long> {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(nullable = false)
+    @NotBlank @Column(nullable = false)
     private String password;
 
-    @Column(unique = true, nullable = false)
-    @Email
+    @Email @Column(unique = true, nullable = false)
     private String email;
 
     @Column(unique = true)
