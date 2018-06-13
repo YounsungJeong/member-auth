@@ -47,9 +47,4 @@ public class MemberController {
     }
 
     // TODO : 로그인 성공 시 jwt 발행
-    // TODO : email 인증 요청
-    // TODO : email 인증 검증
-    // TODO : 핸드폰번호 인증 요청
-    // TODO : 핸드폰번호 인증 검증
-    // TODO : 사용자 정보 조회 -> id / email / phone / 가입일 / 최종 로그인일
 }
