@@ -1,14 +1,18 @@
 package com.younsungs.member.web;
 
+import com.google.gson.reflect.TypeToken;
 import com.younsungs.common.domain.BaseResponse;
 import com.younsungs.common.domain.DefaultCode;
+import com.younsungs.member.domain.Member;
 import com.younsungs.member.domain.request.ChangePasswordRequest;
 import com.younsungs.member.domain.request.CreateMemberRequest;
 import com.younsungs.member.domain.request.testenv.ChangePasswordRequestTestFactory;
 import com.younsungs.member.domain.request.testenv.CreateMemberRequestTestFactory;
+import com.younsungs.member.domain.request.testenv.MemberSpy;
 import com.younsungs.member.service.ChangePasswordService;
 import com.younsungs.member.service.CreateMemberService;
-import com.younsungs.testenv.AbstractMockControllerTest;
+import com.younsungs.member.service.ViewMemberService;
+import com.younsungs.testenv.AbstractControllerMockTest;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -16,22 +20,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 
-public class MemberControllerMockTest extends AbstractMockControllerTest<MemberController> {
+public class MemberControllerMockTest extends AbstractControllerMockTest<MemberController> {
 
     @InjectMocks MemberController memberController;
     @Mock CreateMemberService createMemberService;
     @Mock ChangePasswordService changePasswordService;
+    @Mock ViewMemberService viewMemberService;
 
     @Override
     public MemberController getController() {
@@ -117,6 +122,43 @@ public class MemberControllerMockTest extends AbstractMockControllerTest<MemberC
                     .accept(MediaType.APPLICATION_JSON_UTF8_VALUE))
                     .andExpect(handler().handlerType(MemberController.class))
                     .andExpect(handler().methodName("changePassword"))
+                    .andDo(print())
+                    .andReturn()
+                    .getResponse();
+        }
+        catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    public void viewMember() throws UnsupportedEncodingException {
+        // Given
+        long id = 1L;
+        String password = "not include";
+        MemberSpy memberSpy = new MemberSpy(id, password, "test2", "test3");
+        when(viewMemberService.viewMember(id)).thenReturn(memberSpy);
+
+        // When
+        MockHttpServletResponse mockHttpServletResponse = viewMember(id);
+        BaseResponse<Member> response = gson.fromJson(mockHttpServletResponse.getContentAsString(),new TypeToken<BaseResponse<Member>>(){}.getType());
+        Member member = response.getResponse();
+
+        // Then
+        verify(viewMemberService, times(1)).viewMember(id);
+        assertThat(member.getId(), is(memberSpy.getId()));
+        assertThat(member.getEmail(), is(memberSpy.getEmail()));
+        assertThat(member.getPhone(), is(memberSpy.getPhone()));
+        assertThat(member.getPassword(), is(nullValue()));
+    }
+
+    MockHttpServletResponse viewMember(long id) {
+        try {
+            return mockMvc.perform(get("/member/"+id)
+                    .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                    .accept(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                    .andExpect(handler().handlerType(MemberController.class))
+                    .andExpect(handler().methodName("viewMember"))
                     .andDo(print())
                     .andReturn()
                     .getResponse();

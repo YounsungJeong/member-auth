@@ -1,17 +1,16 @@
 package com.younsungs.member.web;
 
 import com.younsungs.common.domain.BaseResponse;
+import com.younsungs.common.domain.DefaultCode;
 import com.younsungs.member.domain.request.ChangePasswordRequest;
 import com.younsungs.member.domain.request.CreateMemberRequest;
 import com.younsungs.member.service.ChangePasswordService;
 import com.younsungs.member.service.CreateMemberService;
+import com.younsungs.member.service.ViewMemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -23,6 +22,12 @@ public class MemberController {
     public BaseResponse createMember(@Valid @RequestBody CreateMemberRequest createMemberRequest){
         createMemberService.createMember(createMemberRequest.getEmail(), createMemberRequest.getPassword());
         return BaseResponse.okResponse();
+    }
+
+    @Autowired ViewMemberService viewMemberService;
+    @GetMapping("/member/{id}")
+    public BaseResponse viewMember(@PathVariable Long id){
+        return new BaseResponse(DefaultCode.OK, viewMemberService.viewMember(id));
     }
 
     @Autowired ChangePasswordService changePasswordService;

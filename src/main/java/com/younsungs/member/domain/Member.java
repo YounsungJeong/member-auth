@@ -1,5 +1,6 @@
 package com.younsungs.member.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.younsungs.common.domain.JpaId;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -17,22 +18,23 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Member implements JpaId<Long> {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    protected Long id;
 
+    @JsonIgnore
     @NotBlank @Column(nullable = false)
-    private String password;
+    protected String password;
 
     @Email @Column(unique = true, nullable = false)
-    private String email;
+    protected String email;
 
     @Column(unique = true)
-    private String phone;
+    protected String phone;
 
     @Column(name = "registration_date", nullable = false)
-    private LocalDateTime registrationDate;
+    protected LocalDateTime registrationDate;
 
     @Column(name = "last_login_date")
-    private LocalDateTime lastLoginDate;
+    protected LocalDateTime lastLoginDate;
 
     public Member(String email, String password) {
         this.email = email;

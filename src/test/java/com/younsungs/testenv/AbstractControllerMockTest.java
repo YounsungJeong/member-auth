@@ -12,7 +12,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.io.UnsupportedEncodingException;
 
 @RunWith(MockitoJUnitRunner.class)
-public abstract class AbstractMockControllerTest <T> {
+public abstract class AbstractControllerMockTest<T> {
 
     protected MockMvc mockMvc;
     protected Gson gson;
