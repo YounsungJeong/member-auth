@@ -4,8 +4,10 @@ import com.younsungs.common.domain.BaseResponse;
 import com.younsungs.common.domain.DefaultCode;
 import com.younsungs.member.domain.request.ChangePasswordRequest;
 import com.younsungs.member.domain.request.CreateMemberRequest;
+import com.younsungs.member.domain.request.DeleteMemberRequest;
 import com.younsungs.member.service.ChangePasswordService;
 import com.younsungs.member.service.CreateMemberService;
+import com.younsungs.member.service.DeleteMemberService;
 import com.younsungs.member.service.ViewMemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,8 +28,15 @@ public class MemberController {
 
     @Autowired ViewMemberService viewMemberService;
     @GetMapping("/member/{id}")
-    public BaseResponse viewMember(@PathVariable Long id){
+    public BaseResponse viewMember(@PathVariable long id){
         return new BaseResponse(DefaultCode.OK, viewMemberService.viewMember(id));
+    }
+
+    @Autowired DeleteMemberService deleteMemberService;
+    @DeleteMapping("/member/{id}")
+    public BaseResponse deleteMember(@PathVariable long id, @Valid @RequestBody DeleteMemberRequest request){
+        deleteMemberService.deleteMember(id, request);
+        return new BaseResponse(DefaultCode.OK);
     }
 
     @Autowired ChangePasswordService changePasswordService;

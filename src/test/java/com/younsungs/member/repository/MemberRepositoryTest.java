@@ -18,7 +18,6 @@ public class MemberRepositoryTest extends AbstractRepositoryTest<Member, MemberR
 
     String email = UUID.randomUUID().toString()+"@test";
     String password = UUID.randomUUID().toString();
-    String phone = UUID.randomUUID().toString();
 
     @Override
     protected MemberRepository initRepository() {
@@ -56,6 +55,19 @@ public class MemberRepositoryTest extends AbstractRepositoryTest<Member, MemberR
 
         // Then
         assertThat(t_.isPresent(), is(false));
+    }
+
+    @Test
+    public void delete(){
+        // Given
+        save();
+        r.delete(t);
+
+        // When
+        Optional<Member> member = r.findById(t.getId());
+
+        // Then
+        assertThat(member.isPresent(), is(false));
     }
 
     /** 제약조건 **/

@@ -51,4 +51,8 @@ public class Member implements JpaId<Long> {
 
         this.password = newPassword;
     }
+
+    public boolean isCurrentPassword(String password){
+        return this.password.equals(password);
+    }
 }

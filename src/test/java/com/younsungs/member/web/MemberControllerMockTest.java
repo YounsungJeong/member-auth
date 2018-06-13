@@ -6,11 +6,11 @@ import com.younsungs.common.domain.DefaultCode;
 import com.younsungs.member.domain.Member;
 import com.younsungs.member.domain.request.ChangePasswordRequest;
 import com.younsungs.member.domain.request.CreateMemberRequest;
-import com.younsungs.member.domain.request.testenv.ChangePasswordRequestTestFactory;
-import com.younsungs.member.domain.request.testenv.CreateMemberRequestTestFactory;
-import com.younsungs.member.domain.request.testenv.MemberSpy;
+import com.younsungs.member.domain.request.DeleteMemberRequest;
+import com.younsungs.member.domain.request.testenv.*;
 import com.younsungs.member.service.ChangePasswordService;
 import com.younsungs.member.service.CreateMemberService;
+import com.younsungs.member.service.DeleteMemberService;
 import com.younsungs.member.service.ViewMemberService;
 import com.younsungs.testenv.AbstractControllerMockTest;
 import org.junit.Test;
@@ -37,6 +37,7 @@ public class MemberControllerMockTest extends AbstractControllerMockTest<MemberC
     @Mock CreateMemberService createMemberService;
     @Mock ChangePasswordService changePasswordService;
     @Mock ViewMemberService viewMemberService;
+    @Mock DeleteMemberService deleteMemberService;
 
     @Override
     public MemberController getController() {
@@ -44,7 +45,7 @@ public class MemberControllerMockTest extends AbstractControllerMockTest<MemberC
     }
 
     @Test
-    public void memberCreate_성공() {
+    public void memberCreate() {
         List<CreateMemberRequest> requests = CreateMemberRequestTestFactory.INSTANCE.memberCreate_성공_요청();
 
         for(CreateMemberRequest request : requests){
@@ -59,7 +60,7 @@ public class MemberControllerMockTest extends AbstractControllerMockTest<MemberC
     }
 
     @Test
-    public void memberCreate_실패() {
+    public void memberCreate_validFail() {
         List<CreateMemberRequest> requests = CreateMemberRequestTestFactory.INSTANCE.memberCreate_실패_요청();
 
         for(CreateMemberRequest request : requests){
@@ -88,7 +89,7 @@ public class MemberControllerMockTest extends AbstractControllerMockTest<MemberC
     }
 
     @Test
-    public void changePassword_성공(){
+    public void changePassword(){
         List<ChangePasswordRequest> requests = ChangePasswordRequestTestFactory.INSTANCE.chanePassword_성공();
 
         for(ChangePasswordRequest request : requests){
@@ -103,7 +104,7 @@ public class MemberControllerMockTest extends AbstractControllerMockTest<MemberC
     }
 
     @Test
-    public void changePassword_실패(){
+    public void changePassword_validFail(){
         List<ChangePasswordRequest> requests = ChangePasswordRequestTestFactory.INSTANCE.chanePassword_실패();
 
         for(ChangePasswordRequest request : requests){
@@ -159,6 +160,49 @@ public class MemberControllerMockTest extends AbstractControllerMockTest<MemberC
                     .accept(MediaType.APPLICATION_JSON_UTF8_VALUE))
                     .andExpect(handler().handlerType(MemberController.class))
                     .andExpect(handler().methodName("viewMember"))
+                    .andDo(print())
+                    .andReturn()
+                    .getResponse();
+        }
+        catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    public void deleteMember(){
+        // Given
+        long id = 1L;
+        DeleteMemberRequest deleteMemberRequest = new DeleteMemberRequestSpy("password");
+
+        // When
+        deleteMember(id, deleteMemberRequest);
+
+        // Then
+        verify(deleteMemberService, times(1)).deleteMember(id, deleteMemberRequest);
+    }
+
+    @Test
+    public void deleteMember_validFail(){
+        List<DeleteMemberRequest> requests = DeleteMemberRequestTestFactory.INSTANCE.deleteMember_실패();
+
+        for(DeleteMemberRequest request : requests){
+            long id = 1L;
+            MockHttpServletResponse mockResponse = deleteMember(id, request);
+
+            verify(deleteMemberService, times(0)).deleteMember(id, request);
+            assertThat(mockResponse.getStatus(), is(HttpStatus.BAD_REQUEST.value()));
+        }
+    }
+
+    MockHttpServletResponse deleteMember(long id, DeleteMemberRequest deleteMemberRequest) {
+        try {
+            return mockMvc.perform(delete("/member/"+id)
+                    .content(gson.toJson(deleteMemberRequest))
+                    .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                    .accept(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                    .andExpect(handler().handlerType(MemberController.class))
+                    .andExpect(handler().methodName("deleteMember"))
                     .andDo(print())
                     .andReturn()
                     .getResponse();
