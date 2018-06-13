@@ -70,4 +70,13 @@ public class MemberTest extends AbstractDomainTest<Member> {
     public void changePassword_실패_새패스워드가이전과동일(){
         t.changePassword(password, password);
     }
+
+    @Test
+    public void isCurrentPassword(){
+        boolean trueResult = t.isCurrentPassword(password);
+        boolean falseResult = t.isCurrentPassword(UUID.randomUUID().toString());
+
+        assertThat(trueResult, is(true));
+        assertThat(falseResult, is(false));
+    }
 }
